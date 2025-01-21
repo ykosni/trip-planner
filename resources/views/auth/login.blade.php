@@ -4,6 +4,11 @@
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
+        
+        <div>
+            <h1>ログイン</h1>
+            <br>
+        </div>
 
         <!-- Email Address -->
         <div>

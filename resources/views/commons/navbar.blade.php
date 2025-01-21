@@ -1,8 +1,18 @@
 <header class="mb-4">
     <nav class="navbar bg-neutral text-neutral-content">
+        
         {{-- トップページへのリンク --}}
-        <div class="flex-1">
+        <div class="flex">
+            
             <h1><a class="btn btn-ghost normal-case text-xl" href="/">Trip Planner</a></h1>
+        </div>
+
+        <div class="flex-1">
+            @if (Auth::check())
+                こんにちは、{{ Auth::user()->name }}さん
+            @else
+                おでかけプランをらくらく管理！
+            @endif
         </div>
 
         <div class="flex-none">
@@ -13,11 +23,7 @@
                 </ul>
                 <div class="dropdown dropdown-end">
                     <button type="button" tabindex="0" class="btn btn-ghost normal-case font-normal lg:hidden">
-                        @if (Auth::check())
-                            {{ Auth::user()->name }}
-                        @else
-                            Guest
-                        @endif
+                        menu
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
