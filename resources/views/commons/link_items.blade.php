@@ -1,8 +1,8 @@
 @if (Auth::check())
     {{-- プラン一覧ページへのリンク --}}
-    <li><a class="link link-hover" href="#">プラン一覧</a></li>
+    <li><a class="link link-hover" href="{{ route('plans.index') }}">プラン一覧</a></li>
     {{-- 新規プラン作成ページへのリンク --}}
-    <li><a class="link link-hover" href="#">新規プラン</a></li>
+    <li><a class="link link-hover" href="{{ route('plans.create') }}">新規プラン</a></li>
     {{-- ログアウトへのリンク --}}
     <li><a class="link link-hover" href="#" onclick="event.preventDefault();this.closest('form').submit();">ログアウト</a></li>
 @else
