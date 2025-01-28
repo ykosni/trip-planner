@@ -19,7 +19,7 @@
             @if($activities->isNotEmpty())
                 @foreach($activities as $activity)
                     <div class="border-b py-2">
-                        <p><strong>{{ $activity->date->format('Y年m月d日') }} {{ $activity->time->format('H:i') }}</strong></p>
+                        <p><strong>{{ $activity->datetime }}</strong></p>
                         <p>{{ $activity->content }}</p>
                         <p>場所: {{ $activity->place }}</p>
                     </div>
@@ -31,7 +31,7 @@
     </div>
 
     <div class="flex space-x-4">
-        <a href="{{ route('plans.edit', $plan) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <a href="{{ route('plans.edit', $plan) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
             プランを編集
         </a>
         <a href="{{ route('plans.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">

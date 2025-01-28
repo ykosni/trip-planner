@@ -14,10 +14,8 @@ return new class extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('plan_id');
-            $table->date('date');
-            $table->integer('order_number');
+            $table->datetime('datetime');
             $table->string('content', 255);
-            $table->time('time');
             $table->string('place', 255);
             $table->timestamps();
             

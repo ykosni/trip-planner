@@ -5,6 +5,8 @@
 <div class="flex flex-col items-center">
   @if (Auth::check())
                 ログインされていたら、プラン一覧を表示
+                
+                
   @else
   <!-- ページタイトル -->
   <div class="prose hero mx-auto max-w-full rounded w-full">

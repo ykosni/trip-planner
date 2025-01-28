@@ -18,55 +18,65 @@ class ActivityController extends Controller
     public function create(Plan $plan)
     {
         $activities = $plan->activities()->orderBy('order_number')->get();
-        return view('activities.create', compact('plan', 'activities'));
+        return view('activities.create', compact(['plan' => $plan], 'activities'));
     }
 
     
     
     
 
-    public function store(Request $request)
+    public function store(Request $request, Plan $plan)
     {
+        //dd($request->all());
+        
+        
+        //$リクエストのデータが正しいのか確認する
         $validatedData = $request->validate([
-            'plan_id' => 'required|exists:plans,id',
             'content' => 'array',
             'content.*' => 'nullable|string',
-            'date' => 'array',
-            'date.*' => 'nullable|date',
-            'time' => 'array',
-            'time.*' => 'nullable|date_format:H:i',
+            'datetime' => 'array',
+            'datetime.*' => 'nullable|date_format:Y-m-d\TH:i',
             'place' => 'array',
             'place.*' => 'nullable|string',
         ]);
 
-        $plan = Plan::findOrFail($validatedData['plan_id']);
-
+        //入力済のアクティビティのデータを$activitiesに配列として保存する
+        //$activitiesの空の配列を作り、
         $activities = [];
+        //$contentの$index番号に対して、ループをおこなう
         foreach ($validatedData['content'] as $index => $content) {
+            //アクティビティ情報を連想配列として作成し、$indexに対応するcontent、datetime、placeを$activitiesの中に保存する
             $activities[] = [
                 'content' => $content,
-                'date' => $validatedData['date'][$index],
-                'time' => $validatedData['time'][$index],
+                'datetime' => $validatedData['datetime'][$index],
                 'place' => $validatedData['place'][$index],
             ];
         }
-
+        
+        //「＋」ボタンを押された場合、空のフォームを持って、アクティビティ作成画面（activities.create）に移動する
         if ($request->input('action') === 'add') {
-            $activities[] = ['content' => '', 'date' => '', 'time' => '', 'place' => '']; // 新しい空のフォーム
-            return view('activities.create', compact('plan', 'activities'));
+            $activities[] = ['content' => '', 'datetime' => '', 'place' => '']; // 新しい空のフォームを作って、activitiesに入れる
+            return view('activities.create', [
+                'plan' => $plan,
+                'activities' => $activities
+            ]);
         }
 
-        // データベースへの保存処理
-        foreach ($activities as $activityData) {
-            if (!empty($activityData['content'])) {
-                $maxOrderNumber = Activity::where('plan_id', $plan->id)->max('order_number') ?? 0;
-                $activity = new Activity($activityData);
-                $activity->order_number = $maxOrderNumber + 1;
-                $plan->activities()->save($activity);
+        //「保存して一覧へ戻る」ボタンを押された場合、これまで$activitiesに保存した配列をサーバーに保存してプラン一覧（plan.index）に戻る
+
+        // アクティビティを保存
+            foreach ($validatedData['content'] as $index => $content) {
+                if (!empty($content)) {
+                    $activity = new Activity([
+                        'content' => $content,
+                        'datetime' => $validatedData['datetime'][$index],
+                        'place' => $validatedData['place'][$index],
+                    ]);
+                    $plan->activities()->save($activity);
+                }
             }
-        }
 
-        return redirect()->route('plans.index');
+                return redirect()->route('plans.index');
     }
 
 
@@ -78,37 +88,90 @@ class ActivityController extends Controller
     public function edit($planId)
     {
         $plan = Plan::findOrFail($planId);
-        return view('activities.edit', ['plan' => $plan]);
+        $activities = $plan->activities()->orderBy('datetime')->get();
+        return view('activities.edit', [
+            'plan' => $plan,
+            'activities' => $activities
+            ]);
     }
     
 
-    public function update(Request $request)
+    public function update(Request $request, $planId)
     {
-        //$requestの中に、複数のactivitiesがある為、それぞれをバリデーションさせる
+        //dd($request->all());
+        
+        $plan = Plan::findOrFail($planId);
+        
+        //$リクエストのデータが正しいのか確認する
         $validatedData = $request->validate([
-            'activities' => 'required|array',
-            'activities.*.id' => 'required|exists:activities,id',
-            'activities.*.date' => 'required|date',
-            'activities.*.content' => 'required|max:255',
-            'activities.*.time' => 'required',
-            'activities.*.place' => 'required|max:255',
+            'content' => 'array',
+            'content.*' => 'nullable|string',
+            'datetime' => 'array',
+            'datetime.*' => 'nullable|date_format:Y-m-d\TH:i',
+            'place' => 'array',
+            'place.*' => 'nullable|string',
+            'id' => 'array'
         ]);
+        
+        //dd($validatedData);
 
-        //各アクティビティのデータをupdate処理
-        foreach ($validatedData['activities'] as $activityData) {
-            $activity = Activity::findOrFail($activityData['id']);
-            $activity->update($activityData);
+        //入力済のアクティビティのデータを$activitiesに配列として保存する
+        //$activitiesの空の配列を作り、
+        $activities = [];
+        //$contentの$index番号に対して、ループをおこなう
+        foreach ($validatedData['content'] as $index => $content) {
+            //アクティビティ情報を連想配列として作成し、$indexに対応するcontent、datetime、place、idを$activitiesの中に保存する
+            $activities[] = [
+                'content' => $content,
+                'datetime' => $validatedData['datetime'][$index],
+                'place' => $validatedData['place'][$index],
+                'id' => $validatedData['id'][$index]
+            ];
+            
+        }
+        
+        //dd($activities);
+        
+        //「＋」ボタンを押された場合、空のフォームを持って、アクティビティ作成画面（activities.create）に移動する
+        if ($request->input('action') === 'add') {
+            $activities[] = ['content' => '', 'datetime' => '', 'place' => '']; // 新しい空のフォームを作って、activitiesに入れる
+            return view('activities.edit', [
+                'plan' => $plan,
+                'activities' => $activities
+            ]);
         }
 
-        // ※すべてのアクティビティが同じプランに属していると仮定する
-        //バリデーション済のデータから最初のアクティビティのIDを取得
-            $firstActivityId = $validatedData['activities'][0]['id'];
-        //そのIDを使ってデータベースからActivityレコードを取得
-            $activity = Activity::findOrFail($firstActivityId);
-        //取得したActivityレコードから関連するプランのIDを取得
-            $planId = $activity->plan_id;
-        
-        return redirect()->route('plans.show', ['plan' => $planId]);
+        //「保存して一覧へ戻る」ボタンを押された場合、これまで$activitiesに保存した配列をサーバーに保存してプラン一覧（plan.index）に戻る
+
+        // アクティビティを保存
+            foreach ($validatedData['content'] as $index => $content) {
+                
+                if (!empty($content)) {
+                
+                    if (!empty($validatedData['id'][$index])){
+                        $activity = [
+                            'plan_id' => $planId,
+                            'content' => $content,
+                            'datetime' => $validatedData['datetime'][$index],
+                            'place' => $validatedData['place'][$index],
+                            'id' => $validatedData['id'][$index]
+                        ];
+                    }
+                    else {
+                        $activity = [
+                            'plan_id' => $planId,
+                            'content' => $content,
+                            'datetime' => $validatedData['datetime'][$index],
+                            'place' => $validatedData['place'][$index]
+                        ];
+                    }
+                    
+                    $plan->activities()->upsert($activity, ['id']);
+                    
+                }
+            }
+
+                return redirect()->route('plans.index');
     }
 
 

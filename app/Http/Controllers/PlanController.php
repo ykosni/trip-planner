@@ -33,16 +33,14 @@ class PlanController extends Controller
         $plan->user_id = auth()->id();
         $plan->save();
         
-        $activities = [['content' => '', 'date' => '', 'time' => '', 'place' => '']];
-    return view('activities.create', compact('plan', 'activities'));
+        $activities = [['content' => '', 'datetime' => '', 'place' => '']];
+        return view('activities.create', ['plan' => $plan->id, 'activities' => $activities]);
     }
         
 
-    
-    
     public function show(Plan $plan)
     {
-        $activities = $plan->activities()->orderBy('order_number')->get();
+        $activities = $plan->activities()->orderBy('datetime')->get();
         return view('plans.show', compact('plan', 'activities'));
     }
 

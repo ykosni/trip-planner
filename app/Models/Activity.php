@@ -11,17 +11,13 @@ class Activity extends Model
     
     protected $fillable = [
         'plan_id',
-        'date',
-        'order_number',
+        'datetime',
         'content',
-        'time',
         'place'
     ];
     
-    protected $casts = [
-        'date' => 'date',
-        'time' => 'datetime',
-    ];
+    protected $dates = ['datetime'];
+
 
     public function plan()
     {

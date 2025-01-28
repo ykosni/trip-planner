@@ -2,44 +2,38 @@
 
 @section('content')
 <div class="container mx-auto px-4">
-    <h1 class="text-2xl font-bold mb-4">アクティビティ編集</h1>
-
-    <form action="{{ route('activities.update', $plan) }}" method="POST">
-        @csrf
+    <h2 class="text-2xl font-bold mb-6">新規アクティビティ編集</h2>
+    <form action="{{ route('activities.update', ['plan'=>$plan] ) }}" method="POST">
         @method('PUT')
+        @csrf
+        <input type="hidden" name="plan_id" value="{{ $plan }}">
         
-        @foreach($plan->activities as $index => $activity)
-            <div class="mb-6 p-4 border rounded">
-                <h2 class="text-xl font-semibold mb-2">アクティビティ {{ $index + 1 }}</h2>
-                <input type="hidden" name="activities[{{ $index }}][id]" value="{{ $activity->id }}">
+        @foreach($activities as $index => $activity)
+            <div class="activity-input bg-gray-100 p-6 rounded-lg shadow">
                 
-                <div class="mb-4">
-                    <label for="activities[{{ $index }}][content]" class="block text-gray-700 text-sm font-bold mb-2">内容</label>
-                    <input type="text" name="activities[{{ $index }}][content]" id="activities[{{ $index }}][content]" value="{{ $activity->content }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                </div>
+                <!--$activity['id']が存在するか確認し、存在しなければ、idをに空のボックスを作る-->
+                <input type="hidden" name="id[{{ $index }}]" value="{{ $activity['id'] ?? '' }}">
 
-                <div class="mb-4">
-                    <label for="activities[{{ $index }}][date]" class="block text-gray-700 text-sm font-bold mb-2">日付</label>
-                    <input type="date" name="activities[{{ $index }}][date]" id="activities[{{ $index }}][date]" value="{{ $activity->date->format('Y-m-d') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                
+                <h3>アクティビティ {{ $index + 1 }}</h3>
+                <div>
+                    <label for="datetime[{{ $index }}]">日時</label>
+                    <input type="datetime-local" name="datetime[{{ $index }}]" value="{{ $activity['datetime'] ? date('Y-m-d\TH:i', strtotime($activity['datetime'])) : '' }}">
                 </div>
-
-                <div class="mb-4">
-                    <label for="activities[{{ $index }}][time]" class="block text-gray-700 text-sm font-bold mb-2">時間</label>
-                    <input type="time" name="activities[{{ $index }}][time]" id="activities[{{ $index }}][time]" value="{{ $activity->time->format('H:i') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <div>
+                    <label for="content[{{ $index }}]">内容</label>
+                    <input type="text" name="content[{{ $index }}]" value="{{ $activity['content'] }}">
                 </div>
-
-                <div class="mb-4">
-                    <label for="activities[{{ $index }}][place]" class="block text-gray-700 text-sm font-bold mb-2">場所</label>
-                    <input type="text" name="activities[{{ $index }}][place]" id="activities[{{ $index }}][place]" value="{{ $activity->place }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <div>
+                    <label for="place[{{ $index }}]">場所</label>
+                    <input type="text" name="place[{{ $index }}]" value="{{ $activity['place'] }}">
                 </div>
             </div>
         @endforeach
 
-        <div class="flex items-center justify-between">
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                保存
-            </button>
-        </div>
+        <button type="submit" name="action" value="add">[＋]追加</button>
+        <button type="submit" name="action" value="save">保存してプラン一覧へ戻る</button>
+        
     </form>
 </div>
 @endsection

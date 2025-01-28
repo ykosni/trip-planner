@@ -42,6 +42,8 @@ Route::get('plans/{plan}/activities/edit', [ActivityController::class, 'edit'])-
 Route::put('plans/{plan}/activities', [ActivityController::class, 'update'])->name('activities.update');
 Route::delete('plans/{plan}/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
 
+
+
 //Route::get('plans/{plan}/activities/{activities}', [ActivityController::class, 'show'])->name('activities.show');
 //Route::get('plans/{plan}/activities', [ActivityController::class, 'index'])->name('activities.index');
 
