@@ -12,13 +12,17 @@ class ActivityController extends Controller
     public function index()
     {
         $activities = Activity::orderBy('order_number')->get();
-        return view('activities.index', compact('activities'));
+        return view('activities.index', ['activities'=>$activities]);
     }
 
-    public function create(Plan $plan)
+    public function create($plan_id)
     {
-        $activities = $plan->activities()->orderBy('order_number')->get();
-        return view('activities.create', compact(['plan' => $plan], 'activities'));
+        $plan = Plan::findOrFail($plan_id);
+        $activities = Activity::where('plan_id', $plan_id)->orderBy('order_number')->get();
+        return view('activities.create', [
+            'plan' => $plan,
+            'activities' => $activities
+        ]);
     }
 
     
@@ -82,8 +86,9 @@ class ActivityController extends Controller
 
     public function show(Activity $activity)
     {
-        return view('activities.show', compact('activity'));
+        return view('activities.show', ['activity'=>$activity]);
     }
+
 
     public function edit($planId)
     {
@@ -143,11 +148,12 @@ class ActivityController extends Controller
 
         //「保存して一覧へ戻る」ボタンを押された場合、これまで$activitiesに保存した配列をサーバーに保存してプラン一覧（plan.index）に戻る
 
-        // アクティビティを保存
+        // バリデーションしたアクティビティデータを保存
             foreach ($validatedData['content'] as $index => $content) {
                 
+                //もし$contentが空でなければ（＝入力済なら）以下の処理を実施
                 if (!empty($content)) {
-                
+                    //もし$validatedDataの'id’が空なら、
                     if (!empty($validatedData['id'][$index])){
                         $activity = [
                             'plan_id' => $planId,
@@ -175,10 +181,13 @@ class ActivityController extends Controller
     }
 
 
-    public function destroy(Activity $activity)
+    public function destroy($planId, $activityId)
     {
+        $plan = Plan::findOrFail($planId);
+        $activity = Activity::findOrFail($activityId);
+        $activities = $plan->activities()->orderBy('datetime')->get();
         $activity->delete();
 
-        return redirect()->route('activities.index');
+        return redirect()->route('activities.edit', ['plan' => $planId]);
     }
 }
