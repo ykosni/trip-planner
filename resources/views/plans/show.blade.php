@@ -31,9 +31,11 @@
     </div>
 
     <div class="flex space-x-4">
-        <a href="{{ route('plans.edit', $plan) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-            プランを編集
-        </a>
+        @if(Auth::check() && Auth::id() == $plan->user_id)
+            <a href="{{ route('plans.edit', $plan) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                プランを編集
+            </a>
+        @endif
         <a href="{{ route('plans.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
             プラン一覧に戻る
         </a>

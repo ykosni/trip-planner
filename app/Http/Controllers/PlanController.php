@@ -58,9 +58,14 @@ class PlanController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
         ]); 
 
-        $plan->update($validatedData);
+    // 認証済みユーザー（閲覧者）がその投稿の所有者である場合は投稿を編集
+        if (\Auth::id() === $plan->user_id) {
+            $plan->update($validatedData);
+            return redirect()->route('activities.edit', ['plan'=>$plan->id]);
+        }
+        
+        return redirect()->route('plans.index');
 
-        return redirect()->route('activities.edit', ['plan'=>$plan->id]);
     }
 
 
@@ -68,6 +73,7 @@ class PlanController extends Controller
     {
         
         $plan = Plan::findOrFail($id);
+        // 認証済みユーザー（閲覧者）がその投稿の所有者である場合は投稿を削除
         if (\Auth::id() === $plan->user_id) {
             $plan->delete();
             return redirect()->route('plans.index')->with('success', 'プランが削除されました');
