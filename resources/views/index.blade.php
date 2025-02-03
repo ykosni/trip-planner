@@ -4,7 +4,10 @@
 
 <div class="flex flex-col items-center">
   @if (Auth::check())
-                ログインされていたら、プラン一覧を表示
+    {{-- プラン一覧ページへのリンク --}}
+    <a class="btn btn-primary btn-lg normal-case my-4" href="{{ route('plans.index') }}">プラン一覧</a>
+    {{-- 新規プラン作成ページへのリンク --}}
+    <a class="btn btn-primary btn-lg normal-case my-4" href="{{ route('plans.create') }}">新規プラン</a>
                 
                 
   @else
