@@ -29,7 +29,7 @@
         </div>
 
         <div class="flex items-center justify-between">
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 font-bold text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                 次へ（アクティビティ編集）
             </button>
             <a href="{{ route('plans.index') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">

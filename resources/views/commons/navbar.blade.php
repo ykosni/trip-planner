@@ -9,7 +9,7 @@
 
         <div class="flex-1">
             @if (Auth::check())
-                こんにちは、{{ Auth::user()->name }}さん
+                <p class="text-sm">こんにちは、{{ Auth::user()->name }}さん</p>
             @else
                 おでかけプランをらくらく管理！
             @endif

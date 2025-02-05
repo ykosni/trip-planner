@@ -23,7 +23,7 @@
   </div>
   
   <!-- ログイン画面と会員登録リンク -->
-  <div class="flex justify-center items-center h-screen">
+  <div class="flex justify-center items-center mt-4">
     <div class="flex gap-4">
       <a class="btn btn-primary btn-lg normal-case" href="{{ route('login') }}">ログインはこちら</a>
       <a class="btn btn-primary btn-lg normal-case" href="{{ route('register') }}">会員登録はこちら（無料）</a>

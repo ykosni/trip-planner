@@ -1,33 +1,37 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4">
-    <h2 class="text-2xl font-bold mb-6">新規アクティビティ作成</h2>
-    <form action="{{ route('activities.store', ['plan'=>$plan] ) }}" method="POST">
+<div class="container mx-auto px-4 py-8">
+    <h2 class="text-3xl font-bold mb-8 text-center">新規アクティビティ作成</h2>
+
+    <form action="{{ route('activities.store', ['plan' => $plan]) }}" method="POST" class="space-y-6">
         @csrf
         <input type="hidden" name="plan_id" value="{{ $plan }}">
-        
-        @foreach($activities as $index => $activity)
-            <div class="activity-input bg-gray-100 p-6 rounded-lg shadow">
-                <h3>アクティビティ {{ $index + 1 }}</h3>
-                <div>
-                    <label for="datetime[{{ $index }}]">日時</label>
-                    <input type="datetime-local" name="datetime[{{ $index }}]" value="{{ $activity['datetime'] ? date('Y-m-d\TH:i', strtotime($activity['datetime'])) : '' }}">
-                </div>
-                <div>
-                    <label for="content[{{ $index }}]">内容</label>
-                    <input type="text" name="content[{{ $index }}]" value="{{ $activity['content'] }}">
-                </div>
-                <div>
-                    <label for="place[{{ $index }}]">場所</label>
-                    <input type="text" name="place[{{ $index }}]" value="{{ $activity['place'] }}">
-                </div>
-            </div>
-        @endforeach
 
-        <button type="submit" name="action" value="add">[＋]追加</button>
-        <button type="submit" name="action" value="save">保存してプラン一覧へ戻る</button>
-        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            @foreach($activities as $index => $activity)
+                <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4">アクティビティ {{ $index + 1 }}</h3>
+                    <div class="mb-4">
+                        <label for="datetime[{{ $index }}]" class="block text-gray-700 font-medium mb-1">日時</label>
+                        <input type="datetime-local" name="datetime[{{ $index }}]" value="{{ $activity['datetime'] ? date('Y-m-d\TH:i', strtotime($activity['datetime'])) : '' }}" class="w-full p-2 border rounded-md">
+                    </div>
+                    <div class="mb-4">
+                        <label for="content[{{ $index }}]" class="block text-gray-700 font-medium mb-1">内容</label>
+                        <input type="text" name="content[{{ $index }}]" value="{{ $activity['content'] }}" class="w-full p-2 border rounded-md">
+                    </div>
+                    <div class="mb-4">
+                        <label for="place[{{ $index }}]" class="block text-gray-700 font-medium mb-1">場所</label>
+                        <input type="text" name="place[{{ $index }}]" value="{{ $activity['place'] }}" class="w-full p-2 border rounded-md">
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="flex justify-end space-x-4 mt-8">
+            <button type="submit" name="action" value="add" class="bg-blue-500 hover:bg-blue-700 font-bold text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline">[＋] 追加</button>
+            <button type="submit" name="action" value="save" class="bg-blue-500 hover:bg-blue-700 font-bold text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline">保存してプラン一覧へ戻る</button>
+        </div>
     </form>
 </div>
 @endsection
